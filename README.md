@@ -21,46 +21,61 @@ etl-powerpulse/
 
 ## ⚙️ How It Works
 
-1. **Extract**: Fetches energy capability data from EIA API.
-2. **Transform**: Flattens the JSON response into structured rows.
-3. **Load**: 
-   - Saves raw data into MongoDB  
-   - Writes transformed data into Excel and inserts into MySQL
+The **PowerPulse ETL pipeline** automates extracting, transforming, and loading energy capability data from the U.S. EIA API into multiple storage systems for analysis and reporting.  
 
-## 🚀 Setup Instructions
+Here’s how the main components work:
 
-```bash
-git clone https://github.com/yourusername/etl-powerpulse.git
-cd etl-powerpulse
+### 🔧 Source Modules
 
-python -m venv venv
-source venv/bin/activate
+- **`config.py`**  
+  Stores environment variables and configuration, such as API keys, file paths, and database credentials.
 
-pip install -r requirements.txt
+- **`decorators.py`**  
+  Provides reusable decorators for logging, timing, and error handling across the pipeline.
 
-# Set env vars or update config.py manually
-export STATE_LIST="CA"
-export MONGO_URI="mongodb://localhost:27017"
-export MYSQL_HOST="localhost"
-export MYSQL_USER="root"
-export MYSQL_PWD="root"
-export MYSQL_DB="godigitaldb"
-export EXCEL_PATH="output.xlsx"
+- **`eia_client.py`**  
+  Handles communication with the EIA API to fetch state-wise energy capability data. Manages API key authentication and response parsing.
 
-python src/etl_app.py
-```
+- **`etl_app.py`**  
+  The main orchestrator of the ETL pipeline:
+  - Extracts data from the EIA API
+  - Transforms and cleans it
+  - Triggers loaders to export data to various destinations
 
-## ✅ Tests
+- **`excel_exporter.py`**  
+  Converts structured data into Excel format for manual analysis or sharing.
 
-```bash
-pytest tests/
-```
+- **`mongo_store.py`**  
+  Persists raw JSON API responses into MongoDB for long-term storage and traceability.
 
-## 📌 TODOs
+- **`mysql_loader.py`**  
+  Inserts transformed data into MySQL for use with analytics platforms and BI tools.
 
-- [ ] Add Docker support
-- [ ] Add Airflow DAG
-- [ ] CI with GitHub Actions
+---
+
+### 📊 Workflow Summary
+
+1. **Extract**  
+   Connects to the EIA API and retrieves raw energy data in JSON format.
+
+2. **Transform**  
+   Flattens, cleans, and structures the JSON into tabular format using Python.
+
+3. **Load**  
+   - **Raw Data** → Stored in **MongoDB**
+   - **Cleaned Data** → Exported to:
+     - Excel spreadsheet (`.xlsx`)
+     - MySQL database for structured queries and reporting
+
+---
+
+### ✅ Future Enhancements
+
+- [ ] Docker support for containerized deployment
+- [ ] Airflow DAG for scheduled and production-ready ETL runs
+- [ ] GitHub Actions for CI/CD integration and automated testing
+
+
 
 ## 📃 License
 
