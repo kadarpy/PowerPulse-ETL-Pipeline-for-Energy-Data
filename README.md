@@ -14,8 +14,6 @@ etl-powerpulse/
 │   ├── excel_exporter.py
 |   ├── mongo_store.py
 |   ├── mysql_loader.py
-├── .gitignore
-├── README.md
 └── requirements.txt
 ```
 
