@@ -1,0 +1,5 @@
+pandas
+openpyxl
+pytest
+pymongo
+mysql-connector-python
